@@ -1,4 +1,4 @@
-#!/usr/bin/env bash 
+#!/usr/bin/env bash
 set -e
 set -x
 
@@ -6,7 +6,7 @@ set -x
 ## PARAMS
 ##
 
-RELEASE_VERSION=${RELEASE_VERSION:-1.10.0.0}
+RELEASE_VERSION=${RELEASE_VERSION:-1.A1}
 SKAWARE_VERSION=${RELEASE_VERSION%.*}
 
 PWD=$(pwd)
@@ -23,7 +23,7 @@ get_packages_with_versions_from_manifest() {
   # skaware versions manifest
   curl -R -L \
       -o /tmp/manifest.txt \
-      https://github.com/just-containers/skaware/releases/download/v$SKAWARE_VERSION/$manifest
+      https://github.com/mubiic/s6-suite/releases/download/v$SKAWARE_VERSION/$manifest
 
   # parse manifest into s6 associative array
   versions=()
@@ -53,11 +53,11 @@ cd /tmp
 packages=($(get_packages_with_versions_from_manifest "manifest-portable.txt"))
 for package in "${packages[@]}"; do
   file=$package-linux-amd64-bin.tar.gz
-  curl -R -L -O https://github.com/just-containers/skaware/releases/download/v$SKAWARE_VERSION/$file
+  curl -R -L -O https://github.com/mubiic/s6-suite/releases/download/v$SKAWARE_VERSION/$file
 done
 
 # strace
-curl -R -L -o /tmp/strace http://landley.net/aboriginal/downloads/binaries/extras/strace-x86_64
+curl -R -L -o /tmp/strace https://github.com/mubiic/s6-suite/releases/download/v1.A1/strace-x86_64
 
 ##
 ## OVERLAYS
@@ -68,7 +68,7 @@ for edition in "${editions[@]}"; do
   if [ "${edition}" == "debug" ]; then
     overlaydstpath="$OVERLAY_DST_PATH-raw-dbg"
     overlaytarpath="$HOME/dist/s6-overlay-dbg-amd64.tar.gz"
-    
+
   else
     overlaydstpath="$OVERLAY_DST_PATH-raw"
     overlaytarpath="$HOME/dist/s6-overlay-amd64.tar.gz"
@@ -101,6 +101,7 @@ for edition in "${editions[@]}"; do
   # fix perms for utilities
   chmod 0755 $overlaydstpath/usr/bin/fix-attrs
   chmod 0755 $overlaydstpath/usr/bin/import-from-envdir
+  chmod 0755 $overlaydstpath/usr/bin/set-contenv
   chmod 0755 $overlaydstpath/usr/bin/with-contenv
   chmod 0755 $overlaydstpath/usr/bin/with-notifywhenup
   chmod 0755 $overlaydstpath/usr/bin/with-retries
