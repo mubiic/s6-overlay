@@ -1,20 +1,6 @@
-**Table of Contents**
+# s6 overlay [![Build Status](https://travis-ci.org/mubiic/s6-overlay.svg)](https://github.com/mubiic/s6-overlay)
 
-- [Quickstart](#quickstart)
-- [Goals](#goals)
-- [Features](#features)
-- [The Docker Way?](#the-docker-way)
-- [Our `s6-overlay` based images](#our-s6-overlay-based-images)
-- [Usage](#usage)
-  - [Using `CMD`](#using-cmd)
-  - [Writing a service script](#writing-a-service-script)
-  - [Customizing `s6` behaviour](#customizing-s6-behaviour)
-- [Performance](#performance)
-- [Contributing](#contributing)
-
-# s6 overlay [![Build Status](https://api.travis-ci.org/just-containers/s6-overlay.svg?branch=master)](https://travis-ci.org/just-containers/s6-overlay)
-
-The s6-overlay-builder project is a series of init scripts and utilities to ease creating Docker images with [s6](http://skarnet.org/software/s6/) as a process supervisor.
+The s6-overlay project is a series of init scripts and utilities as an overlay for Docker images with [s6 init suite](http://skarnet.org/software/s6/) as a process supervisor.
 
 ## Quickstart
 
@@ -22,7 +8,7 @@ Build the following Dockerfile and try this guy out:
 
 ```
 FROM ubuntu
-ADD https://github.com/just-containers/s6-overlay-builder/releases/download/v1.9.1.0/s6-overlay-portable-amd64.tar.gz /tmp/
+ADD https://github.com/mubiic/s6-overlay/releases/download/v1.A1/s6-overlay-portable-amd64.tar.gz /tmp/
 RUN tar xzf /tmp/s6-overlay-portable-amd64.tar.gz -C /
 RUN apt-get update && \
     apt-get install -y nginx && \
@@ -59,12 +45,6 @@ ETag: "5315bd25-264"
 Accept-Ranges: bytes
 ```
 
-## Goals
-The project has the following goals:
-
-* Make it easy to image authors to take advantage of s6
-* Still operate like other Docker images
-
 ## Features
 
 * The s6-overlay provides proper `PID 1` functionality
@@ -91,13 +71,7 @@ Our interpretation of "The Docker Way" is thus:
 
 and our init system is designed to do exactly that! Your images will still behave like other Docker images and fit in with
 
-## Our `s6-overlay` based images
-
-Based on this overlay, we've developed two base docker images:
-* [base](https://github.com/just-containers/base): Based on Ubuntu 14.04 LTS, it was intended to use as a general purpose base image.
-* [base-alpine](https://github.com/just-containers/base-alpine): Based on Alpine Linux 3.1, as advertised on their website: "is a security-oriented, lightweight Linux distribution based on musl libc and busybox." and even it includes a package manager.
-
-## Usage
+## Overlay Usage
 
 The project is distributed as a standard .tar.gz file, which you extract at the root of your image. Afterwards, set your `ENTRYPOINT` to `/init`
 
@@ -116,7 +90,7 @@ For example:
 
 ```
 FROM busybox
-ADD https://github.com/just-containers/s6-overlay-builder/releases/download/v1.9.1.0/s6-overlay-portable-amd64.tar.gz /tmp/
+ADD https://github.com/mubiic/s6-overlay/releases/download/v1.A1/s6-overlay-portable-amd64.tar.gz /tmp/
 RUN gunzip -c /tmp/s6-overlay-portable-amd64.tar.gz | tar -xf - -C /
 ENTRYPOINT ["/init"]
 ```
@@ -147,9 +121,9 @@ PID   USER     COMMAND
 docker-host $
 ```
 
-### Writing a service script
+### Docker images using this overlay
 
-TODO
+alpineproc && ubuntuproc in https://github.com/mubiic/dockerosbase
 
 ### Customizing `s6` behaviour
 
@@ -187,18 +161,24 @@ set-contenv ENV_VAR_NAME env_var_value
 
 The next time your script runs with `with-contenv`, your new environment variable will exist.
 
-## Performance
+### Service scripts
 
-Hei, and what about numbers? `s6-overlay` takes more or less **`904K`** compressed and **`3.4M`** uncompressed, that's very cheap! Although we already provide packaged base images, it is up to you which base image to use. And when it comes to how much time does it take to get supervision tree up and running, it's less than **`100ms`** #3!
+s6init config dir by applying order<inside scripts applying order is according to naming sort,
+ so 00-servicename0, 01-servicename1, 0N-servicenameN are the proper script names>:
+/etc/fix-attrs.d      holds scripts to ensure files owners and permissions are correct
+/etc/cont-init.d      holds one-time system scripts to execute container init before all
+/etc/services.d       holds user services for long-lived daemon processes to be supervised:
+/etc/services.d/*/run           hold service daemons running management scripts, treating s6-setuidgid like sudo
+/etc/services.d/*/finish        hold service daemons exit clean up scripts
+/etc/services.d/*/log/run       hold service daemons running logging scripts
+/etc/services.d/*/log/finish    hold service daemons exit logging scripts
+/etc/cont-finish.d    holds one-time system scripts to clean up container env before exit
 
-## Contributing
+s6init working dir:
+/var/run/s6
 
-TODO
-
-```
-mkdir dist
-chmod o+rw dist
-docker build .                                    | \
-tail -n 1 | awk '{ print $3; }'                   | \
-xargs docker run --rm -v `pwd`/dist:/builder/dist
-```
+## Credits
+Most work have been done by https://github.com/glerchundi who is the original author of the scripts.
+This is a pinpointed version v1.10.0.0 from https://github.com/just-containers/s6-overlay as v1.A0
+Merged https://github.com/just-containers/s6-overlay/pull/53 from smebberson to support set-contenv
+Saved debugging tool from http://landley.net/aboriginal/downloads/binaries/extras/strace-x86_64
