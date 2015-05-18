@@ -316,6 +316,6 @@ s6init working dir:
 ## Credits
 Most work have been done by https://github.com/glerchundi who is the original author of the scripts.
 This is a pinpointed version v1.10.0.0 from https://github.com/just-containers/s6-overlay as v1.A1.0
-Merged https://github.com/just-containers/s6-overlay/pull/53 from smebberson to support set-contenv as v1.A1.1 [Deprecated]  
-***Now please use at least v1.A1.2 which is based on v1.10.0.3***  
+Merged v1.10.0.2 as v1.A1.1 [Deprecated]
+***Now please use at least v1.A1.2 which is based on v1.10.0.3***
 Saved debugging tool from http://landley.net/aboriginal/downloads/binaries/extras/strace-x86_64
