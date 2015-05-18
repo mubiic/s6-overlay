@@ -1,4 +1,4 @@
-#!/usr/bin/env bash 
+#!/usr/bin/env bash
 set -e
 set -x
 
@@ -23,7 +23,7 @@ get_packages_with_versions_from_manifest() {
   # skaware versions manifest
   curl -R -L \
       -o /tmp/manifest.txt \
-      https://github.com/just-containers/skaware/releases/download/v$SKAWARE_VERSION/$manifest
+      https://github.com/mubiic/s6-suite/releases/download/v$SKAWARE_VERSION/$manifest
 
   # parse manifest into s6 associative array
   versions=()
@@ -53,11 +53,11 @@ cd /tmp
 packages=($(get_packages_with_versions_from_manifest "manifest-portable.txt"))
 for package in "${packages[@]}"; do
   file=$package-linux-amd64-bin.tar.gz
-  curl -R -L -O https://github.com/just-containers/skaware/releases/download/v$SKAWARE_VERSION/$file
+  curl -R -L -O https://github.com/mubiic/s6-suite/releases/download/v$SKAWARE_VERSION/$file
 done
 
 # strace
-curl -R -L -o /tmp/strace http://landley.net/aboriginal/downloads/binaries/extras/strace-x86_64
+curl -R -L -o /tmp/strace https://github.com/mubiic/s6-suite/releases/download/v1.A1/strace-x86_64
 
 ##
 ## OVERLAYS
