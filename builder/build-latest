@@ -6,6 +6,7 @@ set -x
 ## PARAMS
 ##
 
+
 RELEASE_VERSION=${RELEASE_VERSION:-1.A1.2}
 SKAWARE_VERSION=${RELEASE_VERSION%.*}
 
@@ -100,13 +101,10 @@ for edition in "${editions[@]}"; do
 
   # fix perms for utilities
   chmod 0755 $overlaydstpath/usr/bin/fix-attrs
-  chmod 0755 $overlaydstpath/usr/bin/import-from-envdir
-<<<<<<< HEAD
   chmod 0755 $overlaydstpath/usr/bin/logutil-newfifo
   chmod 0755 $overlaydstpath/usr/bin/logutil-service
-=======
+  chmod 0755 $overlaydstpath/usr/bin/printcontenv
   chmod 0755 $overlaydstpath/usr/bin/set-contenv
->>>>>>> develop: update s6-suite github download links and readme descriptions
   chmod 0755 $overlaydstpath/usr/bin/with-contenv
   chmod 0755 $overlaydstpath/usr/bin/with-notifywhenup
   chmod 0755 $overlaydstpath/usr/bin/with-retries

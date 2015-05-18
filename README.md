@@ -1,4 +1,4 @@
-# s6 overlay [![Build Status](https://travis-ci.org/mubiic/s6-overlay.svg)](https://github.com/mubiic/s6-overlay)
+# s6 overlay [![Build Status](https://travis-ci.org/mubiic/s6-overlay.svg)](https://travis-ci.org/mubiic/s6-overlay)
 
 The s6-overlay project is a series of init scripts and utilities as an overlay for Docker images with [s6 init suite](http://skarnet.org/software/s6/) as a process supervisor.
 
@@ -8,7 +8,7 @@ Build the following Dockerfile and try this guy out:
 
 ```
 FROM ubuntu
-ADD https://github.com/mubiic/s6-overlay/releases/download/v1.A1/s6-overlay-portable-amd64.tar.gz /tmp/
+ADD https://github.com/mubiic/s6-overlay/releases/download/v1.A1.2/s6-overlay-portable-amd64.tar.gz /tmp/
 RUN tar xzf /tmp/s6-overlay-portable-amd64.tar.gz -C /
 RUN apt-get update && \
     apt-get install -y nginx && \
@@ -180,5 +180,6 @@ s6init working dir:
 ## Credits
 Most work have been done by https://github.com/glerchundi who is the original author of the scripts.
 This is a pinpointed version v1.10.0.0 from https://github.com/just-containers/s6-overlay as v1.A1.0
-Merged https://github.com/just-containers/s6-overlay/pull/53 from smebberson to support set-contenv as v1.A1.1
+Merged v1.10.0.2 as v1.A1.1 [Deprecated]
+***Now please use at least v1.A1.2 which is based on v1.10.0.3***
 Saved debugging tool from http://landley.net/aboriginal/downloads/binaries/extras/strace-x86_64
