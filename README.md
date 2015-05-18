@@ -1,4 +1,4 @@
-**Table of Contents**
+# s6 overlay [![Build Status](https://travis-ci.org/mubiic/s6-overlay.svg)](https://travis-ci.org/mubiic/s6-overlay)
 
 - [Quickstart](#quickstart)
 - [Goals](#goals)
@@ -143,7 +143,7 @@ ENTRYPOINT ["/init"]
 docker-host $ docker build -t s6demo .
 docker-host $ docker run -ti s6demo /bin/sh
 [fix-attrs.d] applying owners & permissions fixes...
-[fix-attrs.d] 00-runscripts: applying... 
+[fix-attrs.d] 00-runscripts: applying...
 [fix-attrs.d] 00-runscripts: exited 0.
 [fix-attrs.d] done.
 [cont-init.d] executing container initialization scripts...
@@ -261,7 +261,7 @@ This script will output whatever the `MYENV` enviroment variable contains.
 
 It is possible somehow to tweak `s6` behaviour by providing an already predefined set of environment variables to the execution context:
 
-* `S6_LOGGING` (default = 0): 
+* `S6_LOGGING` (default = 0):
   * **`0`**: Outputs everything to stdout/stderr.
   * **`1`**: Uses an internal `catch-all` logger and persists everything on it, it is located in `/var/log/s6-uncaught-logs`. Nothing would be written to stdout/stderr.
 * `S6_BEHAVIOUR_IF_STAGE2_FAILS` (default = 0):
@@ -272,7 +272,7 @@ It is possible somehow to tweak `s6` behaviour by providing an already predefine
 * `S6_KILL_GRACETIME` (default = 3000): How long (in milliseconds) `s6` should wait to reap zombies before sending a `KILL` signal.
 * `S6_LOGGING_SCRIPT` (default = "n20 s1000000 T"): This env decides what to log and how, by default every line will prepend with ISO8601, rotated when the current logging file reaches 1mb and archived, at most, with 20 files.
 
-## Performance
+### Loading environment variables
 
 And what about numbers? `s6-overlay` takes more or less **`904K`** compressed and **`3.4M`** uncompressed, that's very cheap! Although we already provide packaged base images, it is up to you which base image to use. And when it comes to how much time does it take to get supervision tree up and running, it's less than **`100ms`** #3!
 
@@ -282,11 +282,40 @@ Anyway you want! Open issues, open PRs, we welcome all contributors!
 
 ## Want to build the overlay on your system?
 
-```
-mkdir dist
-chmod o+rw dist
-docker build .                                    | \
-tail -n 1 | awk '{ print $3; }'                   | \
-xargs docker run --rm -v `pwd`/dist:/builder/dist
+printenv
 ```
 
+### Writing environment variables
+
+To write any new environment variables, use the `set-contenv` utility like so:
+
+```sh
+#!/usr/bin/with-contenv sh
+
+set-contenv ENV_VAR_NAME env_var_value
+```
+
+The next time your script runs with `with-contenv`, your new environment variable will exist.
+
+### Service scripts
+
+s6init config dir by applying order<inside scripts applying order is according to naming sort,
+ so 00-servicename0, 01-servicename1, 0N-servicenameN are the proper script names>:
+/etc/fix-attrs.d      holds scripts to ensure files owners and permissions are correct
+/etc/cont-init.d      holds one-time system scripts to execute container init before all
+/etc/services.d       holds user services for long-lived daemon processes to be supervised:
+/etc/services.d/*/run           hold service daemons running management scripts, treating s6-setuidgid like sudo
+/etc/services.d/*/finish        hold service daemons exit clean up scripts
+/etc/services.d/*/log/run       hold service daemons running logging scripts
+/etc/services.d/*/log/finish    hold service daemons exit logging scripts
+/etc/cont-finish.d    holds one-time system scripts to clean up container env before exit
+
+s6init working dir:
+/var/run/s6
+
+## Credits
+Most work have been done by https://github.com/glerchundi who is the original author of the scripts.
+This is a pinpointed version v1.10.0.0 from https://github.com/just-containers/s6-overlay as v1.A1.0
+Merged https://github.com/just-containers/s6-overlay/pull/53 from smebberson to support set-contenv as v1.A1.1 [Deprecated]  
+***Now please use at least v1.A1.2 which is based on v1.10.0.3***  
+Saved debugging tool from http://landley.net/aboriginal/downloads/binaries/extras/strace-x86_64
