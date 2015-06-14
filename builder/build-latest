@@ -68,7 +68,7 @@ for edition in "${editions[@]}"; do
   if [ "${edition}" == "debug" ]; then
     overlaydstpath="$OVERLAY_DST_PATH-raw-dbg"
     overlaytarpath="$HOME/dist/s6-overlay-dbg-amd64.tar.gz"
-    
+
   else
     overlaydstpath="$OVERLAY_DST_PATH-raw"
     overlaytarpath="$HOME/dist/s6-overlay-amd64.tar.gz"
