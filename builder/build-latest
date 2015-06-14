@@ -6,7 +6,7 @@ set -x
 ## PARAMS
 ##
 
-RELEASE_VERSION=${RELEASE_VERSION:-1.11.0.0}
+RELEASE_VERSION=${RELEASE_VERSION:-1.A2.1}
 SKAWARE_VERSION=${RELEASE_VERSION%.*}
 
 PWD=$(pwd)
@@ -68,7 +68,7 @@ for edition in "${editions[@]}"; do
   if [ "${edition}" == "debug" ]; then
     overlaydstpath="$OVERLAY_DST_PATH-raw-dbg"
     overlaytarpath="$HOME/dist/s6-overlay-dbg-amd64.tar.gz"
-    
+
   else
     overlaydstpath="$OVERLAY_DST_PATH-raw"
     overlaytarpath="$HOME/dist/s6-overlay-amd64.tar.gz"
