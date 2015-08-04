@@ -8,9 +8,10 @@
 - [Init stages](#init-stages)
 - [Usage](#usage)
   - [Using `CMD`](#using-cmd)
-  - [Fixing ownership & permissions](#fixing-ownership-&-permissions)
+  - [Fixing ownership & permissions](#fixing-ownership--permissions)
   - [Executing initialization And/Or finalization tasks](#executing-initialization-andor-finalization-tasks)
   - [Writing a service script](#writing-a-service-script)
+  - [Dropping privileges](#dropping-privileges)
   - [Container environment](#container-environment)
   - [Customizing `s6` behaviour](#customizing-s6-behaviour)
 - [Performance](#performance)
@@ -244,6 +245,27 @@ If, for instance, you want to use a fifo instead of stdin as an input, write you
 #!/bin/sh
 exec logutil-service -f /var/run/myfifo /var/log/myapp
 ```
+
+### Dropping privileges
+
+When it comes to executing a service, no matter it's a service or a logging service, a very good practice is to drop privileges before executing it. `s6` already includes utilities to do exactly these kind of things:
+
+In `execline`:
+
+```
+#!/usr/bin/execlineb -P
+s6-setuidgid daemon
+myservice
+```
+
+In `sh`:
+
+```
+#!/bin/sh
+exec s6-setuidgid daemon myservice
+```
+
+If you want to know more about these utilities, please take a look to: [`s6-setuidgid`](http://skarnet.org/software/s6/s6-setuidgid.html), [`s6-envuidgid`](http://skarnet.org/software/s6/s6-envuidgid.html) and [`s6-applyuidgid`](http://skarnet.org/software/s6/s6-applyuidgid.html).
 
 ### Container environment
 
