@@ -57,7 +57,7 @@ for package in "${packages[@]}"; do
 done
 
 # strace
-curl -R -L -o /tmp/strace https://github.com/mubiic/s6-suite/releases/download/v1.A1/strace-x86_64
+curl -R -L -o /tmp/strace https://github.com/mubiic/s6-suite/releases/download/v1.A5/strace-x86_64
 
 ##
 ## OVERLAYS
