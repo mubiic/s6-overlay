@@ -1,0 +1,15 @@
+sudo: false
+script:
+- cd builder && RELEASE_VERSION="${TRAVIS_TAG:1}" ./build-latest
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: wYgcsuvJjiP63f06twYR1xS8AQYTNtQqi/bSZW/fOaWEY9u8bcIVS4giYXI68gQT0z5bzf9HJzBpGHL+podrGsalokpqrN92fkkleRLmow7daOdf1KtgN+xvGs0YsplGjOZkgVGxgfY9lctagrxC7z2cajMZH6PD2elP9HLjOJYf00gJMelt0QW4vcaLTLUJkmsYEzJTiwl7N4sajJInuvHOjWkzEO9Bxjw+8FTD/weFcQsrh6HS3BXCZa/qZMEr1EYyuPlCPqATPfEqPyOMklgrMiF42PExxRGaLFLHEFHdEJsIJrqOUFLHWFhfLP3VIpeWDsHd/r71H/VcBKcQFuujkqO7ZusbtG/QYH91ZNUdVD1IqIueWUJwwujlHlUj6111AHQNDmm0gOwJywuVzUEJk5CWS4R2+dF3I3SwbL80N2uEZQvx4xUA0NsXR6mqz8g2KhbD8X0L941qfWEsl5gRkBjL76IKxQUS64ngMxJvjO96MUwyDhYkvXoWbq5XfZhon3dOXBb+59BV/W+iwyChXMZ5qLO5L8orEGhWPa+l1l2F9T0u0D0GymLXpUtIayUN5XzQ3glECLO/dby9k5aZ5TJa89M/VAke0W2Io1/q7pI1VmXIaJNo6UAII7hThl4kR5dnGZryWsoVMEFQHDGr/q+3f2wYfROUSLD7LfA=
+  file:
+    - $HOME/dist/*.tar.gz
+  file_glob: true
+  on:
+    repo: mubiic/s6-overlay
+    branch: master
+    tags: true
