@@ -19,9 +19,6 @@
 - [Notes](#notes)
 - [Contributing](#contributing)
 
-# s6 overlay [![Build Status](https://api.travis-ci.org/just-containers/s6-overlay.svg?branch=master)](https://travis-ci.org/just-containers/s6-overlay)
-
-The s6-overlay-builder project is a series of init scripts and utilities to ease creating Docker images using [s6](http://skarnet.org/software/s6/overview.html) as a process supervisor.
 
 ## Quickstart
 
