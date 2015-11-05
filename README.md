@@ -11,6 +11,7 @@
   - [Fixing ownership & permissions](#fixing-ownership--permissions)
   - [Executing initialization And/Or finalization tasks](#executing-initialization-andor-finalization-tasks)
   - [Writing a service script](#writing-a-service-script)
+  - [Writing an optional finish script](#writing-an-optional-finish-script)
   - [Dropping privileges](#dropping-privileges)
   - [Container environment](#container-environment)
   - [Customizing `s6` behaviour](#customizing-s6-behaviour)
@@ -99,6 +100,8 @@ Our interpretation of "The Docker Way" is thus:
 * Containers should stop when that thing stops
 
 and our init system is designed to do exactly that! Your images will still behave like other Docker images and fit in with the existing ecosystem of images.
+
+See "Writing an optional finish script" under the [Usage](#usage) section for details on stopping "the thing."
 
 ## Our `s6-overlay` based images
 
@@ -221,6 +224,28 @@ Creating a supervised service cannot be easier, just create a service directory 
 ```
 #!/usr/bin/execlineb -P
 nginx -g "daemon off;"
+```
+
+### Writing an optional finish script
+
+By default, services created in `/etc/services.d` will automatically restart. If a service should bring the container down, you'll need to write a `finish` script that does that. Here's an example finish script:
+
+`/etc/services.d/myapp/finish`:
+```
+#!/usr/bin/execlineb -S0
+
+s6-svscanctl -t /var/run/s6/services
+```
+
+It's possible to do more advanced operations - for example, here's a script from @smebberson that only brings down the service when it crashes:
+
+`/etc/services.d/myapp/finish`:
+```
+#!/usr/bin/execlineb -S0
+if -n { s6-test $# -ne 0 }
+if -n { s6-test ${1} -eq 256 }
+
+s6-svscanctl -t /var/run/s6/services
 ```
 
 ### Logging
